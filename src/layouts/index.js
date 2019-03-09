@@ -2,7 +2,9 @@ import styles from './index.css';
 
 function BasicLayout(props) {
   return (
-    <div></div>
+    <div className={styles.layout}>
+      {props.children}
+    </div>
   );
 }
 
