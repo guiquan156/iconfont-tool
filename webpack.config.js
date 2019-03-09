@@ -1,12 +1,20 @@
-/**
- * 不是真实的 webpack 配置，仅为兼容 webstorm 和 intellij idea 代码跳转
- * ref: https://github.com/umijs/umi/issues/1109#issuecomment-423380125
- */
+import { join } from 'path';
 
-module.exports = {
-  resolve: {
-    alias: {
-      '@': require('path').resolve(__dirname, 'src'),
-    },
-  },
+const cwd = process.cwd();
+
+export default function (webpackConfig, { webpack }) {
+  webpackConfig.entry = {
+    main: './src/main/index.js',
+  };
+  webpackConfig.output.path = join(cwd, './app/dist/main');
+  webpackConfig.target = 'electron';
+  webpackConfig.externals = (context, request, callback) => {
+    callback(null, request.charAt(0) === '.' ? false : `require("${request}")`);
+  };
+  webpackConfig.plugins.push(
+    new webpack.DefinePlugin({
+      $dirname: '__dirname',
+    }),
+  );
+  return webpackConfig;
 };
