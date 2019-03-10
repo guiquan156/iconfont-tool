@@ -23,7 +23,7 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        preset: ['es2015', 'react']
+                        presets: ['@babel/react', '@babel/stage-0']
                     }
                 },
                 exclude: /node_modules/
