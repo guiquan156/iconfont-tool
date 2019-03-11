@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const htmlPlugin = require('html-webpack-plugin');
 
 const extractSass = new ExtractTextPlugin({
     filename: "[name].[contenthash].css",
@@ -12,8 +13,8 @@ module.exports = {
         app: './src/renderer/app.js'
     },
     output: {
-        path: path.resolve(__dirname, "app/renderer"),
-        filename: '[name].[hash].js'
+        path: path.resolve(__dirname, "../app/renderer"),
+        filename: '[name].js'
     },
     target: 'electron-renderer',
     module: {
@@ -21,10 +22,7 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/react', '@babel/stage-0']
-                    }
+                    loader: 'babel-loader'
                 },
                 exclude: /node_modules/
             },
