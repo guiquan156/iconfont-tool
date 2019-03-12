@@ -10,4 +10,4 @@ class MyComponent extends React.Component {
     }
 }
 
-ReactDOM.render(<MyComponent />, '#root');
+ReactDOM.render(<MyComponent />, document.querySelector('#root'));
