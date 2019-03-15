@@ -1,8 +1,8 @@
 {
   "private": true,
   "author": {
-    "name": "chencheng",
-    "email": "sorrycc@gmail.com"
+    "name": "Lian",
+    "email": "guiquan156@163.com"
   },
   "build": {
     "files": [
@@ -10,7 +10,7 @@
       "./pages/**/*",
       "./node_modules/**/*"
     ],
-    "appId": "com.sorrycc.umi-example-electron",
+    "appId": "com.lian.iconfont-tool",
     "asar": false
   },
   "scripts": {
@@ -19,8 +19,8 @@
     "dev:main": "webpack -w --config webpack/webpack.main.config.js --mode=development",
     "dev:renderer": "webpack-dev-server --config webpack/webpack.renderer.config.js --mode=development",
     "build": "npm run build:main && npm run build:renderer",
-    "build:main": "",
-    "build:renderer": "",
+    "build:main": "webpack --config webpack/webpack.main.config.js --mode=production",
+    "build:renderer": "webpack --config webpack/webpack.renderer.config.js --mode=production",
     "pack": "npm run build && npm run rebuild && build",
     "pack:dir": "npm run build && npm run rebuild && build --dir",
     "pack:dirOnly": "build --dir",
@@ -34,7 +34,7 @@
     "@babel/preset-stage-0": "^7.0.0",
     "babel-loader": "^8.0.5",
     "concurrently": "^3.5.1",
-    "electron": "^2.0.2",
+    "electron": "^4.0.0",
     "electron-builder": "^20.15.1",
     "electron-debug": "^2.0.0",
     "electron-rebuild": "^1.7.3",

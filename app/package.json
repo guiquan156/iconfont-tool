@@ -1,11 +1,11 @@
 {
-  "name": "umi-example-electron",
+  "name": "iconfont-tool",
   "version": "1.0.0",
-  "description": "Yet another boilerplate for umi+dva+electron.",
-  "main": "dist/main/main.js",
+  "description": "a boilerplate for electron.",
+  "main": "dist/main/app.js",
   "author": {
-    "name": "chencheng",
-    "email": "sorrycc@gmail.com"
+    "name": "Lian",
+    "email": "guiquan156@163.com"
   },
   "dependencies": {
     "electron-is": "^2.4.1",
