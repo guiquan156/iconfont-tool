@@ -14,9 +14,9 @@
     "asar": false
   },
   "scripts": {
-    "start": "electron app/dist/main/main",
+    "start": "electron app/main/app",
     "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\"",
-    "dev:main": "webpack --config webpack/webpack.main.config.js",
+    "dev:main": "webpack -w --config webpack/webpack.main.config.js --mode=development",
     "dev:renderer": "webpack -w --config webpack/webpack.renderer.config.js --mode=development",
     "build": "npm run build:main && npm run build:renderer",
     "build:main": "",

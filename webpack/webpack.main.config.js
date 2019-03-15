@@ -8,5 +8,8 @@ module.exports = {
         path: path.resolve(__dirname, "../app/main"),
         filename: '[name].js'
     },
+    externals: (context, request, callback) => {
+        callback(null, request.charAt(0) === '.' ? false : `require('${request}');`);
+    },
     target: 'electron-main'
 };
