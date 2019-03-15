@@ -63,5 +63,8 @@ module.exports = {
     plugins: [
         extractSass,
         htmlPlugin
-    ]
+    ],
+    devServer: {
+        port: 8000
+    }
 };

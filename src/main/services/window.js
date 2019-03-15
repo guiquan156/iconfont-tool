@@ -1,6 +1,7 @@
 import is from 'electron-is';
 import { join } from 'path';
 import { BrowserWindow } from 'electron';
+import log from 'electron-log';
 
 let count = 0;
 
@@ -23,5 +24,6 @@ export function getPath() {
   if (is.dev()) {
     path = 'http://127.0.0.1:8000/';
   }
+  log.info(`(win) ${path}`);
   return path;
 }
