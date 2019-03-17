@@ -14,7 +14,7 @@ const htmlPlugin = new HtmlPlugin({
 
 module.exports = {
     entry: {
-        app: './src/renderer/app.js'
+        app: './src/renderer/app.jsx'
     },
     output: {
         path: path.resolve(__dirname, "../app/dist/renderer"),
@@ -59,6 +59,9 @@ module.exports = {
                 ]
             }
         ]
+    },
+    resolve: {
+        extensions: ['.js', '.jsx', '.json'],
     },
     plugins: [
         extractSass,
