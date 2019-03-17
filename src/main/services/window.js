@@ -1,5 +1,6 @@
 import is from 'electron-is';
 import { join } from 'path';
+import { format } from 'url';
 import { BrowserWindow } from 'electron';
 import log from 'electron-log';
 
@@ -20,10 +21,12 @@ export function getCount() {
 }
 
 export function getPath() {
-  let path = `file://${join(__dirname, '..', 'renderer')}/index.html`;
+  let path = `file://${join($dirname, '..', 'renderer')}/index.html`;
+
   if (is.dev()) {
     path = 'http://127.0.0.1:8000/';
   }
+
   log.info(`(win) ${path}`);
   return path;
 }

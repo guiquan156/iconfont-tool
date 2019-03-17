@@ -17,7 +17,7 @@ module.exports = {
         app: './src/renderer/app.js'
     },
     output: {
-        path: path.resolve(__dirname, "../app/renderer"),
+        path: path.resolve(__dirname, "../app/dist/renderer"),
         filename: '[name].js'
     },
     target: 'electron-renderer',
