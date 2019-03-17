@@ -1,11 +1,39 @@
 .page-home {
-    padding: 10px 20px 20px;
+    padding: 30px 20px 10px;
     .add {
         margin-right: 5px;
+    }
+    .empty {
+        margin-top: 30px;
+    }
+    .list {
+        border: 1px solid #e8e8e8;
+        border-radius: 4px;
+        overflow: auto;
+        padding: 8px 24px;
+        height: 260px;
     }
     .footer {
         margin-top: 12px;
         overflow: hidden;
         text-align: right;
+    }
+    .listItem {
+        overflow: hidden;
+        justify-content: space-between;
+        & > span {
+            flex-grow: 1;
+            font-size: 13px;
+        }
+    }
+    .iconHead {
+        margin-right: 8px;
+    }
+    .iconTail {
+        margin-left: 8px;
+        cursor: pointer;
+        &:hover {
+            color: #1890ff;
+        }
     }
 }

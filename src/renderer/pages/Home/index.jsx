@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Empty, List } from 'antd';
+import { Button, Empty, List, Icon } from 'antd';
 import * as ipc from 'services/ipc';
 
 import './index.scss';
@@ -23,14 +23,29 @@ export default class Home extends React.Component {
         });
     }
 
+    createFont = () => {
+        console.log('todo create font');
+    }
+
+    rmFile = (file) => {
+        const { fileList } = this.state;
+        this.setState({
+            fileList: fileList.filter(item => item !== file )
+        })
+    }
+
     render () {
         const { fileList } = this.state;
         return (
             <div className="page-home">
-                <h2>iconfont 生成工具</h2>
-                { fileList.length > 0
-                    ? <SelectedList fileList={fileList} addFiles={this.selectFile} />
-                    : <FileEmpty selectFile={this.selectFile} /> }
+                {/* <h2>iconfont 生成工具</h2> */}
+                { fileList.length > 0 ? 
+                    <SelectedList fileList={fileList}
+                        addFiles={this.selectFile}
+                        createFont={this.createFont}
+                        rmFile={this.rmFile}
+                    /> : 
+                    <FileEmpty selectFile={this.selectFile} /> }
             </div>
         )
     }
@@ -39,25 +54,31 @@ export default class Home extends React.Component {
 
 function FileEmpty (props) {
     return (
-        <Empty description="请选择svg文件">
+        <Empty description="请选择svg文件" className="empty">
             <Button type="primary" onClick={props.selectFile}>选择文件</Button>
         </Empty>
     );
 }
 
-function SelectedList ({ fileList, addFiles }) {
+function SelectedList ({ fileList, addFiles, rmFile, createFont }) {
     return (
         <div>
-            <List
-                size="small"
-                bordered
-                dataSource={fileList}
-                renderItem={item => (<List.Item>{item}</List.Item>)}
-            />
-
+            <div className="list">
+                <List
+                    size="small"
+                    dataSource={fileList}
+                    renderItem={item => (
+                        <List.Item key={item} className="listItem">
+                            <Icon type="file-text" className="iconHead"/>
+                            <span className="listCtn">{item}</span>
+                            <Icon type="close" className="iconTail" onClick={() => rmFile(item)}/>
+                        </List.Item>
+                    )}
+                />
+            </div>
             <div className="footer">
                 <Button className="add" onClick={addFiles}>继续添加</Button>
-                <Button type="primary">生成iconfont</Button>
+                <Button type="primary" onClick={createFont}>生成iconfont</Button>
             </div>
         </div>
     );
