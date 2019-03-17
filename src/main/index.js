@@ -5,6 +5,7 @@ import * as application from './services/application';
 import * as window from './services/window';
 import * as menu from './services/menu';
 import * as config from './configs/config';
+import initRouter from './router';
 
 log.transports.file.level = 'info';
 
@@ -50,3 +51,5 @@ global.services = {
 global.configs = {
   config,
 };
+
+initRouter();

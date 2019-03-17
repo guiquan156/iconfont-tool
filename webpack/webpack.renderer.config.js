@@ -73,7 +73,8 @@ module.exports = {
         extensions: ['.js', '.jsx', '.json'],
         alias: {
             pages: path.resolve(__dirname, '..', 'src/renderer/pages'),
-            compponents: path.resolve(__dirname, '..', 'src/renderer/compponents')
+            compponents: path.resolve(__dirname, '..', 'src/renderer/compponents'),
+            services: path.resolve(__dirname, '..', 'src/renderer/services')
         }
     },
     plugins: [

@@ -1,16 +1,19 @@
 import React from 'react';
 import { Button } from 'antd';
 import { ipcRenderer } from 'electron';
+import * as ipc from 'services/ipc';
 
 import './index.scss';
 
 export default class Home extends React.Component {
 
     selectFile = () => {
-        ipcRenderer.send('open-directory-dialog', 'openFile');
+        ipc.send('selectSvgFile', {
+            success: (e, { data }) => {
+                const files = data.files;
 
-        ipcRenderer.on('selectedItem', function (e, path) {
-            console.log(path);
+                console.log(files)
+            }
         });
     }
 
