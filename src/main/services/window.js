@@ -1,6 +1,5 @@
 import is from 'electron-is';
 import { join } from 'path';
-import { format } from 'url';
 import { BrowserWindow } from 'electron';
 import log from 'electron-log';
 
