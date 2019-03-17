@@ -4,7 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 
 const extractSass = new ExtractTextPlugin({
-    filename: "[name].[contenthash].css",
+    filename: "[name].[hash].css",
     disable: process.env.NODE_ENV === "development"
 });
 
@@ -34,12 +34,20 @@ module.exports = {
                 test: /\.(scss|sass)$/,
                 use: extractSass.extract({
                     use: [{
-                        loader: 'style-loader'
-                    }, {
                         loader: 'css-loader'
+                    }, {
+                        loader: 'sass-loader'
                     }],
                     fallback: 'style-loader'
                 })
+            },
+            {
+                test: /\.(css)$/,
+                use: [{
+                    loader: 'style-loader'
+                }, {
+                    loader: 'css-loader'
+                }]
             },
             {
                 test: /\.(png|jpg|gif)$/,
@@ -61,7 +69,12 @@ module.exports = {
         ]
     },
     resolve: {
+        mainFiles: ['index'],
         extensions: ['.js', '.jsx', '.json'],
+        alias: {
+            pages: path.resolve(__dirname, '..', 'src/renderer/pages'),
+            compponents: path.resolve(__dirname, '..', 'src/renderer/compponents')
+        }
     },
     plugins: [
         extractSass,
