@@ -10,6 +10,10 @@
   "dependencies": {
     "electron-is": "^2.4.1",
     "electron-log": "^2.2.14",
-    "electron-store": "^2.0.0"
+    "electron-store": "^2.0.0",
+    "svg2ttf": "^4.2.0",
+    "svgicons2svgfont": "^9.0.4",
+    "ttf2eot": "^2.0.0",
+    "ttf2woff": "^2.0.1"
   }
 }

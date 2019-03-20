@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 import SelectFile from './controllers/SelectFile';
+import CreateFont from './controllers/CreateFont';
 
 class Router {
     constructor () {
@@ -27,6 +28,10 @@ export default function () {
 
     router.register('SelectFile', new SelectFile(), {
         'selectSvgFile': 'selectSvgFile'
+    });
+
+    router.register('CreateFont', new CreateFont(), {
+        'createFont': 'createFont'
     });
 
 }

@@ -31,7 +31,7 @@ export default class Home extends React.Component {
         const { fileList } = this.state;
         this.setState({
             fileList: fileList.filter(item => item !== file )
-        })
+        });
     }
 
     render () {
@@ -47,7 +47,7 @@ export default class Home extends React.Component {
                     /> : 
                     <FileEmpty selectFile={this.selectFile} /> }
             </div>
-        )
+        );
     }
 }
 
