@@ -1,4 +1,5 @@
 import fs from 'fs';
+// import { exec } from 'child_process';
 
 import SVGIcons2SVGFontStream from 'svgicons2svgfont';
 import svg2ttf from 'svg2ttf';
@@ -12,8 +13,12 @@ export default class Controller extends Base {
 
         try {
             const svgPath = 'workspace/svg.svg';
+            const ttfpath = 'workspace/ttf.ttf';
+            
             await this.createSvgFont(fileList, svgPath);
-            await this.svg2ttf(svgPath, 'workspace/ttf.ttf');
+            await this.svg2ttf(svgPath, ttfpath);
+            await this.ttf2eotAndwoff(ttfpath, 'workspace/eot.eot', 'workspace/woff.woff');
+
         } catch (error) {
             // todo 输出错误
             console.log(error);
@@ -57,6 +62,53 @@ export default class Controller extends Base {
                 if (err) return reject(err);
                 const ttf = svg2ttf(file, {});
                 fs.writeFile(destPath, Buffer.from(ttf.buffer), (err) => {
+                    if (err) return reject(err);
+                    return resolve();
+                });
+            });
+        });
+    }
+
+    ttf2eot (ttfPath, destPath) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(ttfPath, (err, file) => {
+                if (err) return reject(err);
+                const ttf = new Uint8Array(file);
+                const eot = Buffer.from(ttf2eot(ttf).buffer);
+                fs.writeFile(destPath, eot, (err) => {
+                    if (err) return reject(err);
+                    return resolve();
+                });
+            });
+        });
+    }
+
+    ttf2woff (ttfPath, destPath) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(ttfPath, (err, file) => {
+                if (err) return reject(err);
+                const ttf = new Uint8Array(file);
+                const woff = Buffer.from(ttf2woff(ttf).buffer);
+                fs.writeFile(destPath, woff, (err) => {
+                    if (err) return reject(err);
+                    return resolve();
+                });
+            });
+        });
+    }
+
+    ttf2eotAndwoff (ttfPath, eotPath, woffPath) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(ttfPath, (err, file) => {
+                if (err) return reject(err);
+                const ttf = new Uint8Array(file);
+                const woff = Buffer.from(ttf2woff(ttf).buffer);
+                const eot = Buffer.from(ttf2eot(ttf).buffer);
+                fs.writeFile(eotPath, woff, (err) => {
+                    if (err) return reject(err);
+                    return resolve();
+                });
+                fs.writeFile(woffPath, eot, (err) => {
                     if (err) return reject(err);
                     return resolve();
                 });
