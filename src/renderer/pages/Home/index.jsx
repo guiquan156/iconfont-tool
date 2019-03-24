@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Empty, List, Icon } from 'antd';
+import { Button, Empty, List, Icon, message } from 'antd';
 import * as ipc from 'services/ipc';
 
 import './index.scss';
@@ -24,11 +24,10 @@ export default class Home extends React.Component {
     }
 
     createFont = () => {
-        console.log(1)
         ipc.send('createFont', {
             fileList: this.state.fileList,
             success: (e) => {
-                console.log('success');
+                message.success('iconfont创建成功！~')
             }
         })
     }
