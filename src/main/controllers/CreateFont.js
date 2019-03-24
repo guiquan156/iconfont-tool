@@ -5,6 +5,7 @@ import SVGIcons2SVGFontStream from 'svgicons2svgfont';
 import svg2ttf from 'svg2ttf';
 import ttf2eot from 'ttf2eot';
 import ttf2woff from 'ttf2woff';
+import ttf2woff2 from 'ttf2woff2';
 import Base from './Base';
 
 export default class Controller extends Base {
@@ -14,10 +15,13 @@ export default class Controller extends Base {
         try {
             const svgPath = 'workspace/svg.svg';
             const ttfpath = 'workspace/ttf.ttf';
-            
+
             await this.createSvgFont(fileList, svgPath);
             await this.svg2ttf(svgPath, ttfpath);
-            await this.ttf2eotAndwoff(ttfpath, 'workspace/eot.eot', 'workspace/woff.woff');
+            await this.ttf2eotAndwoff(ttfpath,
+                'workspace/eot.eot',
+                'workspace/woff.woff',
+                'workspace/woff2.woff2');
 
         } catch (error) {
             // todo 输出错误
@@ -97,18 +101,37 @@ export default class Controller extends Base {
         });
     }
 
-    ttf2eotAndwoff (ttfPath, eotPath, woffPath) {
+    ttf2woff (ttfPath, destPath) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(ttfPath, (err, file) => {
+                if (err) return reject(err);
+                const ttf = new Uint8Array(file);
+                const woff2 = Buffer.from(ttf2woff2(ttf).buffer);
+                fs.writeFile(destPath, woff2, (err) => {
+                    if (err) return reject(err);
+                    return resolve();
+                });
+            });
+        });
+    }
+
+    ttf2eotAndwoff (ttfPath, eotPath, woffPath, woff2Path) {
         return new Promise((resolve, reject) => {
             fs.readFile(ttfPath, (err, file) => {
                 if (err) return reject(err);
                 const ttf = new Uint8Array(file);
                 const woff = Buffer.from(ttf2woff(ttf).buffer);
+                const woff2 = Buffer.from(ttf2woff(ttf).buffer);
                 const eot = Buffer.from(ttf2eot(ttf).buffer);
                 fs.writeFile(eotPath, woff, (err) => {
                     if (err) return reject(err);
                     return resolve();
                 });
-                fs.writeFile(woffPath, eot, (err) => {
+                fs.writeFile(woffPath, woff2, (err) => {
+                    if (err) return reject(err);
+                    return resolve();
+                });
+                fs.writeFile(woff2Path, eot, (err) => {
                     if (err) return reject(err);
                     return resolve();
                 });
