@@ -8,8 +8,6 @@ export function send (name, opts) {
     ipcRenderer.once(`${name}__reply`, function (event, response) {
         const res = JSON.parse(response);
 
-        console.log(res);
-
         if (res.code == 200) {
             success && success(event, res);
         } else {
