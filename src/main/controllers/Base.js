@@ -2,7 +2,7 @@ export default class Base {
     
     reply (event, code = 200, msg = 'success', data = {}) {
         const ret = { code, data, msg }
-        event.sender.send('reply', JSON.stringify(ret));
+        event.sender.send(`${event.eventName}__reply`, JSON.stringify(ret));
     }
 
     success (event, data) {

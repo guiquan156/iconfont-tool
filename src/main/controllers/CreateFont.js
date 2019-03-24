@@ -5,7 +5,8 @@ import ttf2woff from 'ttf2woff';
 import Base from './Base';
 
 export default class Controller extends Base {
-    createSvgFont (event) {
-        
+    createFont (event, params) {
+        const { fileList } = params;
+        this.success(event);
     }
 }

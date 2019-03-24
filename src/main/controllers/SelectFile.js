@@ -2,7 +2,7 @@ import { dialog } from 'electron';
 import Base from './Base';
 
 export default class Controller extends Base {
-    createFont (event) {
+    selectSvgFile (event) {
         dialog.showOpenDialog({
             filters: [{
                 name: 'svg',

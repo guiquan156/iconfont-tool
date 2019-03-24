@@ -17,8 +17,9 @@ class Router {
 
         if (typeof ctrl === 'string') ctrl = this.controller[ctrl];
 
-        ipcMain.on(eventName, function (...args) {
-            ctrl[method](...args);
+        ipcMain.on(eventName, function (event, ...args) {
+            event.eventName = eventName;
+            ctrl[method](event, ...args);
         });
     }
 }

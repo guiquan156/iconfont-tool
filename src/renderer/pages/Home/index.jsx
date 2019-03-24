@@ -24,7 +24,13 @@ export default class Home extends React.Component {
     }
 
     createFont = () => {
-        console.log('todo create font');
+        console.log(1)
+        ipc.send('createFont', {
+            fileList: this.state.fileList,
+            success: (e) => {
+                console.log('success');
+            }
+        })
     }
 
     rmFile = (file) => {

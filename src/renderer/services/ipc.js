@@ -5,7 +5,7 @@ export function send (name, opts) {
 
     ipcRenderer.send(name, {...args});
 
-    ipcRenderer.on('reply', function (event, response) {
+    ipcRenderer.once(`${name}__reply`, function (event, response) {
         const res = JSON.parse(response);
 
         console.log(res);
