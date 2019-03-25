@@ -6,22 +6,43 @@ import svg2ttf from 'svg2ttf';
 import ttf2eot from 'ttf2eot';
 import ttf2woff from 'ttf2woff';
 import ttf2woff2 from 'ttf2woff2';
+import ejs from 'ejs';
+
 import Base from './Base';
+import demoCss from '../tmpls/demo.css';
+import iconfontCssTpl from '../tmpls/iconfont.css';
+import demoHtmlTpl from '../tmpls/demo.html';
 
 export default class Controller extends Base {
+
+    path = {
+        svg: 'workspace/iconfont.svg',
+        ttf: 'workspace/iconfont.ttf',
+        eot: 'workspace/iconfont.eot',
+        woff: 'workspace/iconfont.woff',
+        woff2: 'workspace/iconfont.woff2',
+        css: 'workspace/iconfont.css',
+        demoHtml: 'workspace/demo.html',
+        demoCss: 'workspace/demo.css',
+    };
+
+    tpl = {
+        css: 'workspace/iconfont.css',
+        demoHtml: 'workspace/demo.html',
+        demoCss: 'workspace/demo.css',
+    };
+
     async createFont (event, params) {
         const { fileList } = params;
 
         try {
-            const svgPath = 'workspace/svg.svg';
-            const ttfpath = 'workspace/ttf.ttf';
+            const svgPath = this.path.svg;
+            const ttfpath = this.path.ttf;
 
-            await this.createSvgFont(fileList, svgPath);
+            const fontData = await this.createSvgFont(fileList, svgPath);
+            this.createDemo(fontData);
             await this.svg2ttf(svgPath, ttfpath);
-            await this.ttf2eotAndwoff(ttfpath,
-                'workspace/eot.eot',
-                'workspace/woff.woff',
-                'workspace/woff2.woff2');
+            await this.ttf2eotAndwoff(ttfpath, this.path.eot, this.path.woff, this.path.woff2);
 
         } catch (error) {
             // todo 输出错误
@@ -34,13 +55,17 @@ export default class Controller extends Base {
     // 将单个的svg转换为一个svg文件
     createSvgFont (fileList, destPath) {
         return new Promise ((resolve, reject) => {
+            let metadatas = [];
             const fontStream = new SVGIcons2SVGFontStream({
-                fontName: 'hello'
+                fontName: 'iconfont'
             });
             const startEncode = '\uE001';
             fontStream.pipe(fs.createWriteStream(destPath)) // 暂时写到硬盘中，以后改为存内存
                 .on('finish', (...args) => {
-                    resolve();
+                    resolve({
+                        metadatas,
+                        fontName: 'iconfont'
+                    });
                 })
                 .on('error', (...args) => {
                     reject();
@@ -48,7 +73,7 @@ export default class Controller extends Base {
             fileList.forEach((item, index) => {
                 let readStream = fs.createReadStream(item);
                 let unicode = this.unicodeAdd(startEncode, index);
-                readStream.metadata = {
+                readStream.metadata = metadatas[index] = {
                     unicode: [unicode],
                     name: `icon${index}`
                 };
@@ -141,6 +166,24 @@ export default class Controller extends Base {
 
     unicodeAdd (unicode, num) {
         return `\\u${(unicode.charCodeAt(0) + num).toString(16).toUpperCase()}`;
+    }
+
+    // 创建demo用例
+    createDemo (fontData) {
+        const writeFile = (path, content, options = {}) => new Promise((resolve, reject) => {
+            fs.writeFile(path, content, options, err => {
+                if (err) return reject(err);
+                resolve();
+            })
+        });
+        const iconfontCss = ejs.render(iconfontCssTpl, fontData);
+        const demoHtml = ejs.render(demoHtmlTpl, fontData);
+
+        return Promise.all([
+            writeFile(this.path.demoCss, demoCss),
+            writeFile(this.path.iconfontCss, iconfontCss),
+            writeFile(this.path.demoHtml, demoHtml)
+        ]);
     }
 
 }
