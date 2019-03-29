@@ -40,7 +40,8 @@ export default class Controller extends Base {
 
             const fontData = await this.createSvgFont(fileList, svgPath);
             await this.svg2ttf(svgPath, ttfpath);
-            await this.ttf2eotAndwoff(ttfpath, this.path.eot, this.path.woff, this.path.woff2);
+            const fontsBuff = await this.ttf2eotAndwoff(ttfpath, this.path.eot, this.path.woff, this.path.woff2);
+            fontData.base64 = fontsBuff[2].toString('base64');
             this.createDemo(fontData);
 
         } catch (error) {
@@ -95,7 +96,7 @@ export default class Controller extends Base {
                 const ttf = svg2ttf(file, {});
                 fs.writeFile(destPath, Buffer.from(ttf.buffer), (err) => {
                     if (err) return reject(err);
-                    return resolve();
+                    return resolve(ttf);
                 });
             });
         });
@@ -109,7 +110,7 @@ export default class Controller extends Base {
                 const eot = Buffer.from(ttf2eot(ttf).buffer);
                 fs.writeFile(destPath, eot, (err) => {
                     if (err) return reject(err);
-                    return resolve();
+                    return resolve(eot);
                 });
             });
         });
@@ -123,7 +124,7 @@ export default class Controller extends Base {
                 const woff = Buffer.from(ttf2woff(ttf).buffer);
                 fs.writeFile(destPath, woff, (err) => {
                     if (err) return reject(err);
-                    return resolve();
+                    return resolve(woff);
                 });
             });
         });
@@ -137,7 +138,7 @@ export default class Controller extends Base {
                 const woff2 = Buffer.from(ttf2woff2(ttf).buffer);
                 fs.writeFile(destPath, woff2, (err) => {
                     if (err) return reject(err);
-                    return resolve();
+                    return resolve(woff2);
                 });
             });
         });
@@ -151,18 +152,17 @@ export default class Controller extends Base {
                 const woff = Buffer.from(ttf2woff(ttf).buffer);
                 const woff2 = Buffer.from(ttf2woff(ttf).buffer);
                 const eot = Buffer.from(ttf2eot(ttf).buffer);
-                fs.writeFile(eotPath, woff, (err) => {
-                    if (err) return reject(err);
-                    return resolve();
+                const writeFile = (dist, buff) => new Promise((resolve, reject) => {
+                    fs.readFile(dist, buff, err => {
+                        if (err) return reject(err);
+                        resolve();
+                    })
                 });
-                fs.writeFile(woffPath, woff2, (err) => {
-                    if (err) return reject(err);
-                    return resolve();
-                });
-                fs.writeFile(woff2Path, eot, (err) => {
-                    if (err) return reject(err);
-                    return resolve();
-                });
+                Promise.all([
+                    writeFile(eotPath, eot),
+                    writeFile(woffPath, woff),
+                    writeFile(woff2Path, woff2),
+                ]).then(() => resolve([eot, woff, woff2]));
             });
         });
     }
