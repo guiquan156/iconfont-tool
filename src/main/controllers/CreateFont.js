@@ -9,28 +9,27 @@ import ttf2woff2 from 'ttf2woff2';
 import ejs from 'ejs';
 
 import Base from './Base';
-import demoCss from '../tmpls/demo.css';
-import iconfontCssTpl from '../tmpls/iconfont.css';
-import demoHtmlTpl from '../tmpls/demo.html';
 
 export default class Controller extends Base {
 
-    path = {
-        svg: 'workspace/iconfont.svg',
-        ttf: 'workspace/iconfont.ttf',
-        eot: 'workspace/iconfont.eot',
-        woff: 'workspace/iconfont.woff',
-        woff2: 'workspace/iconfont.woff2',
-        css: 'workspace/iconfont.css',
-        demoHtml: 'workspace/demo.html',
-        demoCss: 'workspace/demo.css',
-    };
-
-    tpl = {
-        css: 'workspace/iconfont.css',
-        demoHtml: 'workspace/demo.html',
-        demoCss: 'workspace/demo.css',
-    };
+    constructor () {
+        super();
+        this.path = {
+            svg: 'workspace/iconfont.svg',
+            ttf: 'workspace/iconfont.ttf',
+            eot: 'workspace/iconfont.eot',
+            woff: 'workspace/iconfont.woff',
+            woff2: 'workspace/iconfont.woff2',
+            css: 'workspace/iconfont.css',
+            demoHtml: 'workspace/demo.html',
+            demoCss: 'workspace/demo.css',
+        };
+        this.tpl = {
+            css: 'workspace/iconfont.css',
+            demoHtml: 'workspace/demo.html',
+            demoCss: 'workspace/demo.css',
+        }
+    }
 
     async createFont (event, params) {
         const { fileList } = params;
@@ -40,9 +39,9 @@ export default class Controller extends Base {
             const ttfpath = this.path.ttf;
 
             const fontData = await this.createSvgFont(fileList, svgPath);
-            this.createDemo(fontData);
             await this.svg2ttf(svgPath, ttfpath);
             await this.ttf2eotAndwoff(ttfpath, this.path.eot, this.path.woff, this.path.woff2);
+            this.createDemo(fontData);
 
         } catch (error) {
             // todo 输出错误
@@ -72,11 +71,15 @@ export default class Controller extends Base {
                 });
             fileList.forEach((item, index) => {
                 let readStream = fs.createReadStream(item);
-                let unicode = this.unicodeAdd(startEncode, index);
-                readStream.metadata = metadatas[index] = {
-                    unicode: [unicode],
+                let code = this.unicodeAdd(startEncode, index);
+                readStream.metadata = {
+                    unicode: [code.unicode],
                     name: `icon${index}`
                 };
+                metadatas[index] = {
+                    hex: code.hex,
+                    name: `icon${index}`
+                }
                 fontStream.write(readStream);
             });
 
@@ -165,25 +168,52 @@ export default class Controller extends Base {
     }
 
     unicodeAdd (unicode, num) {
-        return `\\u${(unicode.charCodeAt(0) + num).toString(16).toUpperCase()}`;
+        const charCode = unicode.charCodeAt(0) + num;
+        const hex = charCode.toString(16);
+        const retUnicode = String.fromCharCode(charCode);
+        return {
+            hex, unicode: retUnicode
+        };
     }
 
     // 创建demo用例
-    createDemo (fontData) {
+    async createDemo (fontData) {
         const writeFile = (path, content, options = {}) => new Promise((resolve, reject) => {
             fs.writeFile(path, content, options, err => {
                 if (err) return reject(err);
                 resolve();
             })
         });
-        const iconfontCss = ejs.render(iconfontCssTpl, fontData);
-        const demoHtml = ejs.render(demoHtmlTpl, fontData);
 
-        return Promise.all([
-            writeFile(this.path.demoCss, demoCss),
-            writeFile(this.path.iconfontCss, iconfontCss),
-            writeFile(this.path.demoHtml, demoHtml)
-        ]);
+        const readFile = (path, options) => new Promise((resolve, reject) => {
+            fs.readFile(path, options = 'utf-8', (err, ctn) => {
+                if (err) return reject(err);
+                resolve(ctn);
+            });
+        });
+
+        try {
+            const [
+                demoCss,
+                iconfontCssTpl,
+                demoHtmlTpl
+            ] = await Promise.all([
+                readFile('./src/main/tmpls/demo.css'),
+                readFile('./src/main/tmpls/iconfont.css'),
+                readFile('./src/main/tmpls/demo.html')
+            ]);
+
+            const iconfontCss = ejs.render(iconfontCssTpl, fontData);
+            const demoHtml = ejs.render(demoHtmlTpl, fontData);
+
+            await [
+                writeFile(this.path.demoCss, demoCss),
+                writeFile(this.path.css, iconfontCss),
+                writeFile(this.path.demoHtml, demoHtml)
+            ];
+        } catch (err) {
+            throw err;
+        }
     }
 
 }
